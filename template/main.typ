@@ -1,11 +1,10 @@
 #import "../src/lib.typ": *
 
-// Document Configuration
 #show: homework.with(
-  title: "Problem Set 3",
+  title: "Advanced Linear Algebra",
   author: "Reza Rezvan",
   email: "rezvan@school.com",
-  course: "MATH 242: Advanced Linear Algebra",
+  course: "MATH 242",
   instructor: "Prof. Johnson",
   date: datetime.today(),
   due-date: "April 30, 2025",
@@ -13,17 +12,11 @@
   accent-color: blue.darken(20%),
 )
 
-// Set equation numbering
 #set math.equation(numbering: "(1)")
-
-// Set enumeration style
 #set enum(numbering: "1)")
-
-// Optional: For a LaTeX-like look
 #set text(font: "New Computer Modern")
 
-// First problem
-#problem(title: "Vector Spaces")[
+#problem(title: "Vector Spaces and Subspaces")[
   Let $V$ be a vector space over a field $F$. Prove the following properties:
 
   1. The zero vector $0_V$ is unique.
@@ -31,127 +24,103 @@
   3. If $a in F$ and $a dot v = 0_V$ for some $v in V$, then either $a = 0$ or $v = 0_V$.
 ]
 
-// Solution to first problem
 *1. Uniqueness of the zero vector:*
 
-Suppose there exist two zero vectors, $0_V$ and $0'_V$. By definition of a zero vector, we have:
-$0_V + 0'_V = 0'_V$ (since $0_V$ is a zero vector)
-$0_V + 0'_V = 0_V$ (since $0'_V$ is a zero vector)
+#theorem(title: "Uniqueness of Zero Vector")[
+  In any vector space $V$, the zero vector $0_V$ is unique.
+]
 
-Therefore, $0_V = 0'_V$, proving that the zero vector is unique.
+#proof[
+  Suppose there exist two zero vectors, $0_V$ and $0'_V$. By definition of a zero vector:
+  $0_V + 0'_V = 0'_V$ (since $0_V$ is a zero vector)
+  $0_V + 0'_V = 0_V$ (since $0'_V$ is a zero vector)
+
+  Therefore, $0_V = 0'_V$, proving that the zero vector is unique.
+]
 
 *2. Uniqueness of the additive inverse:*
 
-Suppose $v in V$ has two additive inverses, $w$ and $w'$. Then:
-$v + w = 0_V$ and $v + w' = 0_V$
-
-Adding $w$ to both sides of the second equation,
-
-$
-w + (v + w') &= w + 0_V \
-(w + v) + w' &= w \
-0_V + w' &= w \
-w' &= w \
-$
-
-Therefore, the additive inverse is unique.
-
-*3. Zero product property:*
-
-Suppose $a in F$, $v in V$, and $a dot v = 0_V$.
-
-If $a = 0$, we're done. Otherwise, $a != 0$, which means $a$ has a multiplicative inverse $a^(-1)$ in $F$.
-
-Multiplying both sides by $a^(-1)$,
-
-$
-a^(-1) dot (a dot v) &= a^(-1) dot 0_V \
-(a^(-1) dot a) dot v &= 0_V \
-1 dot v &= 0_V \
-v &= 0_V
-$
-
-Thus, either $a = 0$ or $v = 0_V$.
-
-// Second problem
-#problem(title: "Linear Transformations")[
-  Let $T: R^3 -> R^2$ be a linear transformation defined by:
-  $T(x, y, z) = (2x - y + 3z, 4x + 2y - z)$
-
-  1. Find the standard matrix representation of $T$.
-  2. Determine $"ker"(T)$ and $"im"(T)$.
-  3. Verify that $"dim"("ker"(T)) + "dim"("im"(T)) = "dim"(R^3)$.
+#lemma(title: "Uniqueness of Additive Inverse")[
+  For each vector $v$ in a vector space $V$, the additive inverse $-v$ is unique.
 ]
 
-// Solution to second problem
-*1. Standard matrix representation:*
+#proof[
+  Suppose $v in V$ has two additive inverses, $w$ and $w'$. Then:
+  $v + w = 0_V$ and $v + w' = 0_V$
 
-For a linear transformation $T: R^3 -> R^2$, the standard matrix is found by applying $T$ to each standard basis vector of $R^3$ and using the results as columns.
+  Adding $w$ to both sides of the second equation:
 
-$
-T(1,0,0) &= (2(1) - 0 + 3(0), 4(1) + 2(0) - 0) = (2, 4) \
-T(0,1,0) &= (2(0) - 1 + 3(0), 4(0) + 2(1) - 0) = (-1, 2) \
-T(0,0,1) &= (2(0) - 0 + 3(1), 4(0) + 2(0) - 1) = (3, -1)
-$
+  $w + (v + w') = w + 0_V$
+  $(w + v) + w' = w$
+  $0_V + w' = w$
+  $w' = w$
 
-Therefore, the standard matrix representation is:
-$ A = mat(
-  2, -1, 3;
-  4, 2, -1
-) $
+  Therefore, the additive inverse is unique.
+]
 
-// Example of a code block with line numbers
-```python
-def matrix_multiply(A, v):
-    """
-    Multiply matrix A by vector v
-    """
-    result = []
-    for row in A:
-        product = sum(a_i * v_i for a_i, v_i in zip(row, v))
-        result.append(product)
-    return result
+#pagebreak()
+#problem(title: "Comparison of Different Vector Space Properties")[
+  Compare and contrast the following vector spaces.
+]
 
-# Example usage
-A = [[2, -1, 3], [4, 2, -1]]
-v = [1, 2, 3]
-print(matrix_multiply(A, v))  # Should output [7, 6]
-```
+#columns(count: 2)[
+  #definition(title: "Real Vector Spaces")[
+    A vector space over the field of real numbers $RR$.
 
-*2. Determining $"ker"(T)$ and $"im"(T)$:*
+    *Properties:*
+    - Contains real-valued vectors
+    - Operations: addition and scalar multiplication by real numbers
+    - Examples: $RR^n$, continuous functions on an interval
+  ]
+][
+  #definition(title: "Complex Vector Spaces")[
+    A vector space over the field of complex numbers $CC$.
 
-For $"ker"(T)$, we solve $T(x, y, z) = (0, 0)$,
+    *Properties:*
+    - Contains complex-valued vectors
+    - Operations: addition and scalar multiplication by complex numbers
+    - Examples: $CC^n$, analytic functions
+  ]
+]
 
-$
-2x - y + 3z &= 0 \
-4x + 2y - z &= 0
-$
+#pagebreak()
+#problem(title: "Linear Transformations")[
+  Explore the properties of linear transformations between vector spaces.
+]
 
-From the second equation: $z = 4x + 2y$
-Substituting into the first equation,
+#theorem(title: "Rank-Nullity Theorem")[
+  Let $T: V -> W$ be a linear transformation between finite-dimensional vector spaces. Then:
 
-$
-2x - y + 3(4x + 2y) &= 0 \
-2x - y + 12x + 6y &= 0 \
-14x + 5y &= 0 \
-y = -frac(14x, 5)
-$
+  $"dim"("ker"(T)) + "di"("im"(T)) = "dim"(V)$
+]
 
-So, $"ker"(T) = \{(t, -frac(14t,5), frac(-8t,5)) | t in RR\}$
+#proof[
+  Let $K = "ker"(T)$ and let $\{v_1, v_2, ..., v_k\}$ be a basis for $K$.
 
-For $"im"(T)$, we analyze the column space of the matrix,
-$
-"span"((2, 4), (-1, 2), (3, -1))
-$
+  Extend this to a basis $\{v_1, ..., v_k, v_(k+1), ..., v_n\}$ for $V$.
 
-Since we can find two linearly independent columns, $"im"(T) = R^2$.
+  We claim that $\{T(v_(k+1)), ..., T(v_n)\}$ is a basis for $"im"(T)$.
 
-*3. Verification of dimension equation:*
+  For linear independence, suppose $sum_(i=k+1)^n a_i T(v_i) = 0$. Then $T(sum_(i=k+1)^n a_i v_i) = 0$, which means $sum_(i=k+1)^n a_i v_i \in K$.
 
-$
-"dim"("ker"(T)) &= 1 ("it's a line in" RR^3) \
-"dim"("im"(T)) &= 2 "(it's" RR^2) \
-"dim"("ker"(T)) + "dim"("im"(T)) &= 1 + 2 = 3 = "dim"(R^3)
-$
+  This implies $sum_(i=k+1)^n a_i v_i = sum_(j=1)^k b_j v_j$ for some scalars $b_j$.
 
-This verifies the rank-nullity theorem.
+  By the linear independence of the basis of $V$, all coefficients must be zero. So $\{T(v_(k+1)), ..., T(v_n)\}$ is linearly independent.
+
+  For spanning, any $w in "im"(T)$ can be written as $w = T(v)$ for some $v in V$. We can write $v = sum_(i=1)^n c_i v_i$. Since $T(v_1) = ... = T(v_k) = 0$, we have $w = sum_(i=k+1)^n c_i T(v_i)$.
+
+  Thus, $"dim"("im"(T)) = n - k = "dim"(V) - "dim"("ker"(T))$.
+]
+
+#columns(count: 2)[
+  #corollary(title: "Injective Case")[
+    If $T$ is injective, then $"ker"(T) = \{0\}$, so $"dim"("im"(T)) = "dim"(V)$.
+
+    This means $T$ preserves dimension.
+  ]
+][
+  #corollary(title: "Surjective Case")[
+    If $T$ is surjective, then $"im"(T) = W$, so $"dim"("ker"(T)) = "dim"(V) - "dim"(W)$.
+    If $"dim"(V) < "dim"(W)$, then $T$ cannot be surjective.
+  ]
+]
