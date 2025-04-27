@@ -80,7 +80,7 @@
   )[
     #text(weight: "bold")[#prefix #if numbered {number}]
     #if title != none [#text(style: "italic")[#title].]
-    #h(0.5em)
+    #v(0.5em)
     #body
   ]
 }
@@ -217,12 +217,10 @@
   title: "Homework Assignment",
   author: "Student Name",
   course: "Course Code",
-  instructor: "Professor Name",
   email: "student@school.uni",
   date: datetime.today(),
   due-date: none,
   collaborators: [],
-  accent-color: blue.darken(20%),
   margin-size: 2.5cm,
   body
 ) = {
@@ -304,21 +302,7 @@
 
       raw(email); linebreak()
 
-      emph[
-        #date.display("[month repr:long] [day], [year]")
-
-        #if due-date != none [
-          \ Due: #due-date
-        ]
-
-        #if collaborators != none and type(collaborators) == array and collaborators.len() > 0 [
-          \ Collaborators: #collaborators.join(", ")
-        ]
-
-        #if instructor != none and instructor != "" [
-          \ #instructor
-        ]
-      ]
+      emph[#date.display("[month repr:long] [day], [year]")]
 
       box(line(length: 100%, stroke: 1pt))
     },

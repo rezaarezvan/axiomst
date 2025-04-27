@@ -1,20 +1,33 @@
 #import "../src/lib.typ": *
 
 #show: homework.with(
-  title: "Advanced Linear Algebra",
+  title: "Stochastic Differential Equations and (Deep) Generative Models",
   author: "Reza Rezvan",
   email: "rezvan@school.com",
-  course: "MATH 242",
-  instructor: "Prof. Johnson",
+  course: "SDE 101",
   date: datetime.today(),
-  due-date: "April 30, 2025",
-  collaborators: ["Alex Smith", "Jordan Lee"],
-  accent-color: blue.darken(20%),
 )
 
 #set math.equation(numbering: "(1)")
 #set enum(numbering: "1)")
 #set text(font: "New Computer Modern")
+
+#definition(title: "Definition of SDEs")[
+  A stochastic differential equation (SDE) is an equation that describes the evolution of a random process over time.
+
+  The general form of an SDE can be written as,
+
+  $
+  d x(t) = underbrace((x(t), t), "drift") thin d t + underbrace(L(x(t), t), "diffusion") d beta(t),
+  $
+
+  where,
+
+  - $x(t)$ is the random process,
+  - $f(x(t), t)$ is the drift term (deterministic part),
+  - $L(x(t), t)$ is the diffusion term (stochastic part),
+  - $d beta(t)$ is standard Brownian motion (Wiener process),
+]
 
 #problem(title: "Vector Spaces and Subspaces")[
   Let $V$ be a vector space over a field $F$. Prove the following properties:
