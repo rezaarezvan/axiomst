@@ -316,7 +316,7 @@
       if nums.len() == 1 {
         [Problem #nums.at(0):]
       }
-      else if nums.len() == 2 {
+      else if nums.len() > 2 {
         [Part (#numbering("a", nums.at(1))):]
       }
     },
