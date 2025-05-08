@@ -286,8 +286,6 @@
       [Corollary #it.number]
     } else if element.func() == example {
       [Example #it.number]
-    } else if element.func() == algorithm {
-      [Algorithm #it.number]
     } else {
       it
     }
