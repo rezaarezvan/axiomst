@@ -1,5 +1,15 @@
-# Axiomst
-A clean, elegant template for academic problem sets and homework assignments in Typst.
+# axiomst
+
+<div align="center">
+
+<figure>
+    <img src="https://raw.githubusercontent.com/rezaarezvan/axiomst/refs/heads/main/thumbnail.png?token=GHSAT0AAAAAADDZEIUAYQTX67GE45SYVY4K2BKL5ZA" alt="Axiomst" width="200">
+    <figcaption>Axiomst - A Typst Template</figcaption>
+</figure>
+
+</div>
+
+a clean, elegant template for academic problem sets and homework assignments in [typst](https://typst.app/).
 
 ## Features
 - Professional-looking problem set layout with title page
@@ -27,11 +37,10 @@ Here's a basic example of how to use the template,
   title: "Problem Set 1",
   author: "Your Name",
   course: "MATH 101: Advanced Linear Algebra",
-  instructor: "Prof. Johnson",
+  email: "name@uni.com",
   date: datetime.today(),
   due-date: "April 30, 2025",
-  collaborators: ["Alex Smith", "Jordan Lee"],
-  accent-color: blue.darken(20%),
+  collaborators: ["Alice Smith", "Bob Johnson"],
 )
 
 #problem(title: "Vector Spaces")[
@@ -52,11 +61,10 @@ The main `homework()` function accepts the following parameters:
 - `title`: The title of the assignment
 - `author`: Your name
 - `course`: Course code or name
-- `instructor`: Professor's name
+- `email`: Your email address
 - `date`: Date of submission (defaults to today)
 - `due-date`: When the assignment is due (optional)
 - `collaborators`: List of people you worked with (optional)
-- `accent-color`: Main color theme for the document
 
 ### Problem Function
 Individual problems can be created with the `problem()` function:

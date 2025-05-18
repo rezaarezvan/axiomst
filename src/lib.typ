@@ -306,8 +306,6 @@
     },
   )
 
-  pagebreak()
-
   set heading(
     numbering: (..nums) => {
       nums = nums.pos()
