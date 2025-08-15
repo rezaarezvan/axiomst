@@ -1,5 +1,11 @@
 # axiomst
 
+<div align="center">
+    <figure>
+        <img src="https://raw.githubusercontent.com/rezaarezvan/axiomst/refs/heads/main/thumbnail.png" alt="Axiomst">
+    </figure>
+</div>
+
 a clean, elegant template for academic problem sets and homework assignments in [typst](https://typst.app/).
 
 ## Features
@@ -13,7 +19,7 @@ a clean, elegant template for academic problem sets and homework assignments in 
 ## Quick Start
 The easiest way to get started is through the Typst web app,
 ```
-typst init @preview/axiomst
+typst init @preview/axiomst:0.1.0
 ```
 
 Or click "Create from template" in the Typst web app and search for "axiomst".
