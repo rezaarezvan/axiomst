@@ -9,6 +9,9 @@
 #let exampleCounter = counter("example")
 #let algorithmCounter = counter("algorithm")
 
+// Global state for solution visibility
+#let show-solutions-state = state("show-solutions", true)
+
 #let columns(
   count: 2,
   gutter: 1em,
@@ -208,9 +211,71 @@
       color: black,
       weight: "bold",
     ),
+    breakable: true,  // Add this!
     title: title,
     ..body
   )
+}
+
+#let subquestions(body) = {
+  enum(
+    numbering: n => text(weight: "bold")[Q#n:],
+    tight: false,
+    spacing: 1em,
+    body
+  )
+}
+
+#let solution(body) = {
+  context {
+    if show-solutions-state.get() {
+      v(0.5em)
+      block(
+        width: 100%,
+        breakable: true,
+      )[
+        #text(weight: "bold")[Solution:]
+        #v(0.3em)
+        #body
+      ]
+    }
+  }
+}
+
+#let pfigure(image-path: "", caption: "", width: 80%) = {
+  align(center)[
+    #image(image-path, width: width)
+    #if caption != "" [
+      #v(0.3em)
+      #text(size: 0.9em, style: "italic")[#caption]
+    ]
+  ]
+}
+
+#let ptable(content, caption: "") = {
+  align(center)[
+    #content
+    #if caption != "" [
+      #v(0.3em)
+      #text(size: 0.9em, style: "italic")[#caption]
+    ]
+  ]
+}
+
+#let instructions(body) = {
+  block(
+    width: 100%,
+    fill: yellow.lighten(90%),
+    radius: 4pt,
+    stroke: yellow.darken(20%),
+    inset: 1em,
+    breakable: true,
+  )[
+    #text(weight: "bold", size: 1.1em)[Assignment Instructions]
+    #v(0.5em)
+    #body
+  ]
+  v(1em)
 }
 
 #let homework(
@@ -222,8 +287,12 @@
   due-date: none,
   collaborators: [],
   margin-size: 2.5cm,
+  show-solutions: true,
   body
 ) = {
+  // Set the global solution visibility state
+  show-solutions-state.update(show-solutions)
+
   set document(title: title, author: author)
 
   set page(
