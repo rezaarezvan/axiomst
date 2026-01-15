@@ -1,139 +1,105 @@
-#import "../src/lib.typ": *
+// axiomst template - Academic homework and slides
+// Delete the parts you don't need!
+
+#import "@preview/axiomst:0.2.0": *
+
+// ============================================================================
+// HOMEWORK TEMPLATE
+// ============================================================================
 
 #show: homework.with(
-  title: "Stochastic Differential Equations and (Deep) Generative Models",
-  author: "Reza Rezvan",
-  email: "rezvan@school.com",
-  course: "SDE 101",
+  title: "Problem Set 1",
+  author: "Your Name",
+  course: "MATH 101",
+  email: "you@university.edu",
   date: datetime.today(),
+  // due-date: "Next Friday",
+  // collaborators: ("Alice", "Bob"),
+  // show-solutions: false,  // Set to false to hide solutions
 )
 
-#set math.equation(numbering: "(1)")
-#set enum(numbering: "1)")
-#set text(font: "New Computer Modern")
+// Optional: Use a nicer font
+// #set text(font: "New Computer Modern")
 
-#definition(title: "Definition of SDEs")[
-  A stochastic differential equation (SDE) is an equation that describes the evolution of a random process over time.
-
-  The general form of an SDE can be written as,
-
-  $
-  d x(t) = underbrace((x(t), t), "drift") thin d t + underbrace(L(x(t), t), "diffusion") d beta(t),
-  $
-
-  where,
-
-  - $x(t)$ is the random process,
-  - $f(x(t), t)$ is the drift term (deterministic part),
-  - $L(x(t), t)$ is the diffusion term (stochastic part),
-  - $d beta(t)$ is standard Brownian motion (Wiener process),
+#instructions[
+  Replace this with your assignment instructions, or delete this block.
 ]
 
-#problem(title: "Vector Spaces and Subspaces")[
-  Let $V$ be a vector space over a field $F$. Prove the following properties:
+#problem(title: "Your First Problem")[
+  State the problem here. You can use math: $integral_0^1 x^2 dif x = 1/3$.
 
-  1. The zero vector $0_V$ is unique.
-  2. For each $v in V$, the additive inverse $-v$ is unique.
-  3. If $a in F$ and $a dot v = 0_V$ for some $v in V$, then either $a = 0$ or $v = 0_V$.
+  + First part of the problem.
+  + Second part of the problem.
 ]
 
-*1. Uniqueness of the zero vector:*
+#solution[
+  Write your solution here. This block can be hidden by setting
+  `show-solutions: false` in the homework configuration.
+]
 
-#theorem(title: "Uniqueness of Zero Vector")[
-  In any vector space $V$, the zero vector $0_V$ is unique.
+#theorem(title: "A Theorem")[
+  State your theorem here.
 ]
 
 #proof[
-  Suppose there exist two zero vectors, $0_V$ and $0'_V$. By definition of a zero vector:
-  $0_V + 0'_V = 0'_V$ (since $0_V$ is a zero vector)
-  $0_V + 0'_V = 0_V$ (since $0'_V$ is a zero vector)
-
-  Therefore, $0_V = 0'_V$, proving that the zero vector is unique.
+  Write your proof here.
 ]
 
-*2. Uniqueness of the additive inverse:*
-
-#lemma(title: "Uniqueness of Additive Inverse")[
-  For each vector $v$ in a vector space $V$, the additive inverse $-v$ is unique.
+#definition(title: "A Definition")[
+  Define your term here.
 ]
 
-#proof[
-  Suppose $v in V$ has two additive inverses, $w$ and $w'$. Then:
-  $v + w = 0_V$ and $v + w' = 0_V$
-
-  Adding $w$ to both sides of the second equation:
-
-  $w + (v + w') = w + 0_V$
-  $(w + v) + w' = w$
-  $0_V + w' = w$
-  $w' = w$
-
-  Therefore, the additive inverse is unique.
+#lemma[
+  A supporting lemma.
 ]
 
-#pagebreak()
-#problem(title: "Comparison of Different Vector Space Properties")[
-  Compare and contrast the following vector spaces.
+#corollary[
+  A consequence of the theorem.
 ]
 
+#example[
+  An illustrative example.
+]
+
+// Two-column layout
 #columns(count: 2)[
-  #definition(title: "Real Vector Spaces")[
-    A vector space over the field of real numbers $RR$.
-
-    *Properties:*
-    - Contains real-valued vectors
-    - Operations: addition and scalar multiplication by real numbers
-    - Examples: $RR^n$, continuous functions on an interval
-  ]
+  Left column content.
 ][
-  #definition(title: "Complex Vector Spaces")[
-    A vector space over the field of complex numbers $CC$.
-
-    *Properties:*
-    - Contains complex-valued vectors
-    - Operations: addition and scalar multiplication by complex numbers
-    - Examples: $CC^n$, analytic functions
-  ]
+  Right column content.
 ]
 
-#pagebreak()
-#problem(title: "Linear Transformations")[
-  Explore the properties of linear transformations between vector spaces.
-]
+// ============================================================================
+// SLIDES TEMPLATE (uncomment to use instead of homework)
+// ============================================================================
 
-#theorem(title: "Rank-Nullity Theorem")[
-  Let $T: V -> W$ be a linear transformation between finite-dimensional vector spaces. Then:
+// #show: slides.with(
+//   title: "My Presentation",
+//   author: "Your Name",
+//   date: datetime.today(),
+//   ratio: "16-9",   // or "4-3"
+//   // handout: true,  // For print-friendly version
+// )
 
-  $"dim"("ker"(T)) + "di"("im"(T)) = "dim"(V)$
-]
+// #title-slide(
+//   title: "My Presentation",
+//   subtitle: "A Subtitle",
+//   author: "Your Name",
+//   institution: "Your University",
+//   date: datetime.today(),
+// )
 
-#proof[
-  Let $K = "ker"(T)$ and let $\{v_1, v_2, ..., v_k\}$ be a basis for $K$.
+// #slide(title: "First Slide")[
+//   Content here.
+//
+//   #pause
+//
+//   This appears on click.
+// ]
 
-  Extend this to a basis $\{v_1, ..., v_k, v_(k+1), ..., v_n\}$ for $V$.
+// #section-slide[New Section]
 
-  We claim that $\{T(v_(k+1)), ..., T(v_n)\}$ is a basis for $"im"(T)$.
-
-  For linear independence, suppose $sum_(i=k+1)^n a_i T(v_i) = 0$. Then $T(sum_(i=k+1)^n a_i v_i) = 0$, which means $sum_(i=k+1)^n a_i v_i \in K$.
-
-  This implies $sum_(i=k+1)^n a_i v_i = sum_(j=1)^k b_j v_j$ for some scalars $b_j$.
-
-  By the linear independence of the basis of $V$, all coefficients must be zero. So $\{T(v_(k+1)), ..., T(v_n)\}$ is linearly independent.
-
-  For spanning, any $w in "im"(T)$ can be written as $w = T(v)$ for some $v in V$. We can write $v = sum_(i=1)^n c_i v_i$. Since $T(v_1) = ... = T(v_k) = 0$, we have $w = sum_(i=k+1)^n c_i T(v_i)$.
-
-  Thus, $"dim"("im"(T)) = n - k = "dim"(V) - "dim"("ker"(T))$.
-]
-
-#columns(count: 2)[
-  #corollary(title: "Injective Case")[
-    If $T$ is injective, then $"ker"(T) = \{0\}$, so $"dim"("im"(T)) = "dim"(V)$.
-
-    This means $T$ preserves dimension.
-  ]
-][
-  #corollary(title: "Surjective Case")[
-    If $T$ is surjective, then $"im"(T) = W$, so $"dim"("ker"(T)) = "dim"(V) - "dim"(W)$.
-    If $"dim"(V) < "dim"(W)$, then $T$ cannot be surjective.
-  ]
-]
+// #slide(title: "Dynamic Content")[
+//   #uncover(1)[Always visible from start]
+//   #uncover((from: 2))[Appears on subslide 2+]
+//   #only(3)[Only on subslide 3]
+// ]

@@ -1,89 +1,154 @@
 # axiomst
-
 <div align="center">
     <figure>
         <img src="https://raw.githubusercontent.com/rezaarezvan/axiomst/refs/heads/main/thumbnail.png" alt="Axiomst">
     </figure>
 </div>
 
-a clean, elegant template for academic problem sets and homework assignments in [typst](https://typst.app/).
+A clean, elegant template for academic homework and presentation slides in [Typst](https://typst.app/).
 
 ## Features
-- Professional-looking problem set layout with title page
+
+### Homework Template
+- Professional problem set layout with title page
 - Automatic problem numbering
-- Customizable problem boxes with titles
-- Support for collaborator attribution
-- Page headers and footers with automatic page numbering
-- Clean, academic aesthetic with customizable accent colors
+- Theorem, lemma, definition, corollary, and example boxes
+- Proof blocks with customizable QED symbols
+- Toggleable solutions
+- Page headers and footers with automatic numbering
+
+### Slides Template
+- Minimal, clean presentation slides
+- Support for 16:9 and 4:3 aspect ratios
+- Dynamic content with `pause`, `uncover`, and `only`
+- Title slides and section slides
+- Handout mode for print-friendly output
 
 ## Quick Start
-The easiest way to get started is through the Typst web app,
-```
-typst init @preview/axiomst:0.1.0
+```sh
+typst init @preview/axiomst:0.2.0
 ```
 
-Or click "Create from template" in the Typst web app and search for "axiomst".
-
-## Usage
-Here's a basic example of how to use the template,
+Or import directly:
 
 ```typst
-#import "@preview/axiomst:0.1.0": *
+#import "@preview/axiomst:0.2.0": *
+```
+
+## Homework Usage
+```typst
+#import "@preview/axiomst:0.2.0": *
 
 #show: homework.with(
   title: "Problem Set 1",
   author: "Your Name",
-  course: "MATH 101: Advanced Linear Algebra",
+  course: "MATH 101",
   email: "name@uni.com",
   date: datetime.today(),
-  due-date: "April 30, 2025",
-  collaborators: ["Alice Smith", "Bob Johnson"],
+  collaborators: ["Alice", "Bob"],
 )
 
 #problem(title: "Vector Spaces")[
-  Let $V$ be a vector space over a field $F$. Prove the following properties:
-
+  Let $V$ be a vector space over a field $F$. Prove the following:
   1. The zero vector $0_V$ is unique.
   2. For each $v in V$, the additive inverse $-v$ is unique.
-  3. If $a in F$ and $a cdot v = 0_V$ for some $v in V$, then either $a = 0$ or $v = 0_V$.
 ]
 
-// Your solution here...
+#theorem(title: "Uniqueness of Zero")[
+  In any vector space $V$, the zero vector is unique.
+]
+
+#proof[
+  Suppose there exist two zero vectors...
+]
 ```
 
-## Configuration Options
-### Homework Template
-The main `homework()` function accepts the following parameters:
+### Homework Options
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `title` | Assignment title | "Homework Assignment" |
+| `author` | Your name | "Student Name" |
+| `course` | Course code/name | "Course Code" |
+| `email` | Your email | - |
+| `date` | Submission date | `datetime.today()` |
+| `due-date` | Due date (optional) | `none` |
+| `collaborators` | List of collaborators | `[]` |
+| `show-solutions` | Show/hide solutions | `true` |
 
-- `title`: The title of the assignment
-- `author`: Your name
-- `course`: Course code or name
-- `email`: Your email address
-- `date`: Date of submission (defaults to today)
-- `due-date`: When the assignment is due (optional)
-- `collaborators`: List of people you worked with (optional)
+### Academic Elements
+- `theorem(title: "", numbered: true)[...]`
+- `lemma(title: "", numbered: true)[...]`
+- `definition(title: "", numbered: true)[...]`
+- `corollary(title: "", numbered: true)[...]`
+- `example(title: "", numbered: true)[...]`
+- `proof[...]` - with customizable `qed-symbol`
+- `problem(title: "", numbered: true)[...]`
+- `solution[...]` - toggleable with `show-solutions`
 
-### Problem Function
-Individual problems can be created with the `problem()` function:
-
-- `title`: Title of the problem
-- `color`: Color theme for this specific problem box
-- `numbered`: Whether to include automatic problem numbering (default: true)
-
-## Customization
-The template is designed to be easily customizable. Here are some common adjustments:
-
+## Slides Usage
 ```typst
-// Change the enumeration style for lists
-#set enum(numbering: "a)")
+#import "@preview/axiomst:0.2.0": *
 
-// Use LaTeX-like font
-#set text(font: "New Computer Modern")
+#show: slides.with(
+  title: "My Presentation",
+  author: "Your Name",
+  date: datetime.today(),
+  ratio: "16-9",  // or "4-3"
+  handout: false,
+)
 
-// Enable equation numbering
-#set math.equation(numbering: "(1)")
+#title-slide(
+  title: "My Presentation",
+  subtitle: "A Subtitle",
+  author: "Your Name",
+  institution: "University",
+  date: datetime.today(),
+)
+
+#slide(title: "First Slide")[
+  Content here.
+
+  #pause
+
+  This appears on the next subslide.
+]
+
+#slide(title: "Dynamic Content")[
+  #uncover(1)[Visible from start]
+  #uncover((from: 2))[Appears on subslide 2+]
+  #only(3)[Only on subslide 3]
+]
+
+#section-slide[New Section]
 ```
+
+### Slides Options
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `title` | Presentation title | "Presentation" |
+| `author` | Presenter name | `none` |
+| `date` | Date | `datetime.today()` |
+| `ratio` | Aspect ratio | `"16-9"` |
+| `handout` | Handout mode (no subslides) | `false` |
+| `margin` | Page margin | `1.5cm` |
+
+### Dynamic Content
+- `#pause` - Content after this appears on the next subslide
+- `#uncover(indices)[...]` - Show content on specified subslides (layout preserved)
+- `#only(indices)[...]` - Show content on specified subslides (affects layout)
+
+Index formats:
+- Single: `1`, `2`, `3`
+- Array: `(1, 3)` - subslides 1 and 3
+- Range: `(from: 2)` - subslide 2 onwards
+
+## Shared Components
+Both templates have access to:
+
+- `columns(count: 2, gutter: 1em)[...][...]` - Multi-column layout
+- `pfigure(image-path: "", caption: "")` - Centered figure
+- `ptable(content, caption: "")` - Centered table
+- `instructions[...]` - Instruction block
 
 ## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see [LICENSE](LICENSE) for details.
