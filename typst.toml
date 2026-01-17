@@ -8,7 +8,7 @@ description = "Academic homework and presentation slides template."
 repository = "https://github.com/rezaarezvan/axiomst"
 keywords = ["homework", "problem set", "slides", "presentation", "academic"]
 categories = ["report", "presentation"]
-compiler = "0.14.0"
+compiler = "0.13.0"
 exclude = ["examples/*", ".claude/*"]
 
 [template]
