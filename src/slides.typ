@@ -3,6 +3,7 @@
 // Global state
 #let _handout-mode = state("axiomst-handout", false)
 #let _subslide = state("axiomst-subslide", 1)
+#let _pause-counter = counter("axiomst-pause")
 
 // Helper: parse indices and return max subslide needed
 #let _max-index(indices) = {
@@ -68,8 +69,11 @@
   }
 }
 
-// Pause marker - increments subslide requirement
-#let pause = metadata(("axiomst-pause", none))
+// Pause marker - increments subslide requirement and pause counter
+#let pause = {
+  _pause-counter.step()
+  metadata(("axiomst-pause", none))
+}
 
 // Count required subslides by traversing content
 #let _count-subslides(elem) = {
@@ -121,15 +125,38 @@
   body
 ) = {
   // Count subslides needed
-  let (num-subslides, num-pauses) = _count-subslides(body)
+  let (num-subslides, _) = _count-subslides(body)
 
   context {
     let handout = _handout-mode.get()
     let iterations = if handout { 1 } else { num-subslides }
+    let start = here()
+    let starts = (
+      definition: counter("definition").at(start).first(),
+      theorem: counter("theorem").at(start).first(),
+      lemma: counter("lemma").at(start).first(),
+      corollary: counter("corollary").at(start).first(),
+      example: counter("example").at(start).first(),
+      algorithm: counter("algorithm").at(start).first(),
+      problem: counter("problem").at(start).first(),
+      equation: counter(math.equation).at(start).first(),
+    )
+    let reset-counters = iterations > 1
 
     for sub in range(1, iterations + 1) {
       pagebreak(weak: true)
       _subslide.update(sub)
+      _pause-counter.update(0)
+      if reset-counters {
+        counter("definition").update(starts.definition)
+        counter("theorem").update(starts.theorem)
+        counter("lemma").update(starts.lemma)
+        counter("corollary").update(starts.corollary)
+        counter("example").update(starts.example)
+        counter("algorithm").update(starts.algorithm)
+        counter("problem").update(starts.problem)
+        counter(math.equation).update(starts.equation)
+      }
 
       // Header
       if header != none {
@@ -149,68 +176,41 @@
 
       // Body with pause handling
       {
-        // Track pause count with a counter unique to this subslide render
-        let pause-ctr = counter("axiomst-p-" + str(sub))
-        pause-ctr.update(0)
-
-        // When we encounter a pause, increment counter
-        show metadata: it => {
-          if type(it.value) == array and it.value.len() >= 2 {
-            if it.value.at(0) == "axiomst-pause" {
-              pause-ctr.step()
-            }
-            // Hide max-sub markers
-            if it.value.at(0) == "axiomst-max-sub" { }
-          }
-        }
-
-        // Apply visibility rules to content elements
-        let make-visible-rule(element) = {
-          show element: it => context {
-            let pauses-seen = pause-ctr.get().first()
-            if handout or pauses-seen < sub {
-              it
-            } else {
-              hide(it)
-            }
-          }
-        }
-
         // Apply to block-level elements
         show par: it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show list.item: it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show enum.item: it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show heading: it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show math.equation.where(block: true): it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show raw.where(block: true): it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show table: it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show figure: it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
         show block: it => context {
-          let p = pause-ctr.get().first()
+          let p = _pause-counter.get().first()
           if handout or p < sub { it } else { hide(it) }
         }
 
