@@ -75,20 +75,29 @@
   fill: blue.lighten(95%),
   body
 ) = {
-  let number = if numbered { ctr.step(); context(ctr.display()) }
+  context {
+    let handout = state("axiomst-handout", false).get()
+    let subslide = state("axiomst-subslide", 1).get()
+    let pause = counter("axiomst-pause").get().first()
+    let visible = handout or pause < subslide
 
-  block(
-    width: 100%,
-    fill: fill,
-    radius: 4pt,
-    stroke: color.darken(10%),
-    inset: 0.6em,
-  )[
-    #text(weight: "bold")[#prefix #if numbered {number}]
-    #if title != none [#text(style: "italic")[#title].]
-    #v(0.5em)
-    #body
-  ]
+    if visible {
+      let number = if numbered { ctr.step(); context(ctr.display()) }
+
+      block(
+        width: 100%,
+        fill: fill,
+        radius: 4pt,
+        stroke: color.darken(10%),
+        inset: 0.6em,
+      )[
+        #text(weight: "bold")[#prefix #if numbered {number}]
+        #if title != none [#text(style: "italic")[#title].]
+        #v(0.5em)
+        #body
+      ]
+    }
+  }
 }
 
 // Theorem

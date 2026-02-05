@@ -130,33 +130,11 @@
   context {
     let handout = _handout-mode.get()
     let iterations = if handout { 1 } else { num-subslides }
-    let start = here()
-    let starts = (
-      definition: counter("definition").at(start).first(),
-      theorem: counter("theorem").at(start).first(),
-      lemma: counter("lemma").at(start).first(),
-      corollary: counter("corollary").at(start).first(),
-      example: counter("example").at(start).first(),
-      algorithm: counter("algorithm").at(start).first(),
-      problem: counter("problem").at(start).first(),
-      equation: counter(math.equation).at(start).first(),
-    )
-    let reset-counters = iterations > 1
 
     for sub in range(1, iterations + 1) {
       pagebreak(weak: true)
       _subslide.update(sub)
       _pause-counter.update(0)
-      if reset-counters {
-        counter("definition").update(starts.definition)
-        counter("theorem").update(starts.theorem)
-        counter("lemma").update(starts.lemma)
-        counter("corollary").update(starts.corollary)
-        counter("example").update(starts.example)
-        counter("algorithm").update(starts.algorithm)
-        counter("problem").update(starts.problem)
-        counter(math.equation).update(starts.equation)
-      }
 
       // Header
       if header != none {
@@ -195,7 +173,16 @@
         }
         show math.equation.where(block: true): it => context {
           let p = _pause-counter.get().first()
-          if handout or p < sub { it } else { hide(it) }
+          if handout or p < sub {
+            it
+          } else {
+            let numbered = not (it.has("numbering") and it.numbering == none)
+            if numbered {
+              let current = counter(math.equation).get().first()
+              counter(math.equation).update(current - 1)
+            }
+            hide(it)
+          }
         }
         show raw.where(block: true): it => context {
           let p = _pause-counter.get().first()
@@ -234,6 +221,7 @@
         footer
       }
     }
+
   }
 }
 
