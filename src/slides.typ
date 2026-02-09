@@ -4,6 +4,7 @@
 #let _handout-mode = state("axiomst-handout", false)
 #let _subslide = state("axiomst-subslide", 1)
 #let _pause-counter = counter("axiomst-pause")
+#let _slide-counter = counter("axiomst-slide")
 
 // Helper: parse indices and return max subslide needed
 #let _max-index(indices) = {
@@ -128,6 +129,9 @@
   let (num-subslides, _) = _count-subslides(body)
 
   context {
+    _slide-counter.step()
+    let slide-no = _slide-counter.get().first()
+    let slide-total = _slide-counter.final().first()
     let handout = _handout-mode.get()
     let iterations = if handout { 1 } else { num-subslides }
 
@@ -210,7 +214,7 @@
         line(length: 100%, stroke: 0.3pt + gray.lighten(50%))
         align(right)[
           #text(size: 0.8em, fill: gray)[
-            #counter(page).display()
+            #slide-no / #slide-total
             #if not handout and num-subslides > 1 [
               #text(fill: gray.lighten(30%))[ | #sub / #num-subslides]
             ]
@@ -280,6 +284,7 @@
 ) = {
   _handout-mode.update(handout)
   _subslide.update(1)
+  _slide-counter.update(0)
 
   let paper = if ratio == "16-9" or ratio == "16:9" {
     "presentation-16-9"
