@@ -117,6 +117,49 @@
   (calc.max(max-sub, pause-count + 1), pause-count)
 }
 
+// Detect whether the slide body contains a numbered figure that would render
+// on more than one overlay. Only those slides need the figure counter reset on
+// each overlay; otherwise the reset itself is layout-noise that can prevent
+// convergence. Equations are never auto-numbered on slides (use `#num` for
+// explicit numbering), so we only track figures here.
+#let _needs-figure-reset(elem, pause-count, subslides) = {
+  let figures = false
+  let current-pauses = pause-count
+
+  if type(elem) == content {
+    if elem.func() == metadata {
+      let val = elem.value
+      if val.len() >= 2 and val.at(0) == "axiomst-pause" {
+        current-pauses += 1
+      }
+    } else if elem.func() == figure {
+      if not (elem.has("numbering") and elem.numbering == none) {
+        figures = figures or current-pauses + 1 < subslides
+      }
+    } else {
+      if elem.has("children") {
+        for child in elem.children {
+          let result = _needs-figure-reset(child, current-pauses, subslides)
+          current-pauses = result.pauses
+          figures = figures or result.figures
+        }
+      }
+      if elem.has("body") {
+        let result = _needs-figure-reset(elem.body, current-pauses, subslides)
+        current-pauses = result.pauses
+        figures = figures or result.figures
+      }
+      if elem.has("child") {
+        let result = _needs-figure-reset(elem.child, current-pauses, subslides)
+        current-pauses = result.pauses
+        figures = figures or result.figures
+      }
+    }
+  }
+
+  (figures: figures, pauses: current-pauses)
+}
+
 // Slide function
 #let slide(
   title: none,
@@ -127,6 +170,7 @@
 ) = {
   // Count subslides needed
   let (num-subslides, _) = _count-subslides(body)
+  let reset = _needs-figure-reset(body, 0, num-subslides)
 
   context {
     _slide-counter.step()
@@ -136,33 +180,17 @@
     let iterations = if handout { 1 } else { num-subslides }
     let start = here()
     let starts = (
-      definition: counter("definition").at(start).first(),
-      theorem: counter("theorem").at(start).first(),
-      lemma: counter("lemma").at(start).first(),
-      corollary: counter("corollary").at(start).first(),
-      example: counter("example").at(start).first(),
-      algorithm: counter("algorithm").at(start).first(),
-      problem: counter("problem").at(start).first(),
-      equation: counter(math.equation).at(start).first(),
       image: counter(figure.where(kind: image)).at(start).first(),
       table: counter(figure.where(kind: table)).at(start).first(),
       raw: counter(figure.where(kind: raw)).at(start).first(),
     )
-    let reset-counters = iterations > 1
+    let reset-figure-counters = iterations > 1 and reset.figures
 
     for sub in range(1, iterations + 1) {
       pagebreak(weak: true)
       _subslide.update(sub)
       _pause-counter.update(0)
-      if reset-counters {
-        counter("definition").update(starts.definition)
-        counter("theorem").update(starts.theorem)
-        counter("lemma").update(starts.lemma)
-        counter("corollary").update(starts.corollary)
-        counter("example").update(starts.example)
-        counter("algorithm").update(starts.algorithm)
-        counter("problem").update(starts.problem)
-        counter(math.equation).update(starts.equation)
+      if reset-figure-counters {
         counter(figure.where(kind: image)).update(starts.image)
         counter(figure.where(kind: table)).update(starts.table)
         counter(figure.where(kind: raw)).update(starts.raw)
@@ -205,16 +233,7 @@
         }
         show math.equation.where(block: true): it => context {
           let p = _pause-counter.get().first()
-          if handout or p < sub {
-            it
-          } else {
-            let numbered = not (it.has("numbering") and it.numbering == none)
-            if numbered {
-              let current = counter(math.equation).get().first()
-              counter(math.equation).update(current - 1)
-            }
-            hide(it)
-          }
+          if handout or p < sub { it } else { hide(it) }
         }
         show raw.where(block: true): it => context {
           let p = _pause-counter.get().first()
@@ -323,6 +342,9 @@
   set document(title: title, author: if author != none { author } else { "" })
   set page(paper: paper, margin: margin)
   set text(size: 20pt)
+  // Display equations are unnumbered by default on slides; use `#num(...)`
+  // to opt in to per-equation numbering with overlay-stable counters.
+  set math.equation(numbering: none)
 
   show heading.where(level: 1): it => {
     text(size: 1.3em, weight: "bold")[#it.body]
