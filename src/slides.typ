@@ -134,11 +134,39 @@
     let slide-total = _slide-counter.final().first()
     let handout = _handout-mode.get()
     let iterations = if handout { 1 } else { num-subslides }
+    let start = here()
+    let starts = (
+      definition: counter("definition").at(start).first(),
+      theorem: counter("theorem").at(start).first(),
+      lemma: counter("lemma").at(start).first(),
+      corollary: counter("corollary").at(start).first(),
+      example: counter("example").at(start).first(),
+      algorithm: counter("algorithm").at(start).first(),
+      problem: counter("problem").at(start).first(),
+      equation: counter(math.equation).at(start).first(),
+      image: counter(figure.where(kind: image)).at(start).first(),
+      table: counter(figure.where(kind: table)).at(start).first(),
+      raw: counter(figure.where(kind: raw)).at(start).first(),
+    )
+    let reset-counters = iterations > 1
 
     for sub in range(1, iterations + 1) {
       pagebreak(weak: true)
       _subslide.update(sub)
       _pause-counter.update(0)
+      if reset-counters {
+        counter("definition").update(starts.definition)
+        counter("theorem").update(starts.theorem)
+        counter("lemma").update(starts.lemma)
+        counter("corollary").update(starts.corollary)
+        counter("example").update(starts.example)
+        counter("algorithm").update(starts.algorithm)
+        counter("problem").update(starts.problem)
+        counter(math.equation).update(starts.equation)
+        counter(figure.where(kind: image)).update(starts.image)
+        counter(figure.where(kind: table)).update(starts.table)
+        counter(figure.where(kind: raw)).update(starts.raw)
+      }
 
       // Header
       if header != none {
