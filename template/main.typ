@@ -1,7 +1,7 @@
 // axiomst template - Academic homework and slides
 // Delete the parts you don't need!
 
-#import "@preview/axiomst:0.2.0": *
+#import "@preview/axiomst:0.2.1": *
 
 // ============================================================================
 // HOMEWORK TEMPLATE

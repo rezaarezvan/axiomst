@@ -1,7 +1,7 @@
 # axiomst
 <div align="center">
     <figure>
-        <img src="https://raw.githubusercontent.com/rezaarezvan/axiomst/refs/heads/main/thumbnail.png" alt="Axiomst">
+        <img src="banner.png" alt="Two example pages rendered with axiomst, featuring a math problem set and a lecture slide with a well-spaced layout and colorful boxes for theorems, definitions, lemmas, and examples.">
     </figure>
 </div>
 
@@ -26,18 +26,18 @@ A clean, elegant template for academic homework and presentation slides in [Typs
 
 ## Quick Start
 ```sh
-typst init @preview/axiomst:0.2.0
+typst init @preview/axiomst:0.2.1
 ```
 
 Or import directly:
 
 ```typst
-#import "@preview/axiomst:0.2.0": *
+#import "@preview/axiomst:0.2.1": *
 ```
 
 ## Homework Usage
 ```typst
-#import "@preview/axiomst:0.2.0": *
+#import "@preview/axiomst:0.2.1": *
 
 #show: homework.with(
   title: "Problem Set 1",
@@ -87,7 +87,7 @@ Or import directly:
 
 ## Slides Usage
 ```typst
-#import "@preview/axiomst:0.2.0": *
+#import "@preview/axiomst:0.2.1": *
 
 #show: slides.with(
   title: "My Presentation",
