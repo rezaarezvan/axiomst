@@ -5,6 +5,8 @@
 #let problem-counter = counter("problem")
 #let theorem-counter = counter("theorem")
 #let definition-counter = counter("definition")
+#let remark-counter = counter("remark")
+#let proposition-counter = counter("proposition")
 #let lemma-counter = counter("lemma")
 #let corollary-counter = counter("corollary")
 #let example-counter = counter("example")
@@ -163,6 +165,41 @@
   theorem-base(
     lemma-counter,
     "Lemma",
+    title: title,
+    numbered: numbered,
+    color: color,
+    fill: color.lighten(95%),
+    ..body
+  )
+}
+
+// Remark
+#let remark(
+  title: none,
+  numbered: true,
+  color: gray.darken(20%),
+  ..body
+) = {
+  theorem-base(
+    remark-counter,
+    "Remark",
+    title: title,
+    numbered: numbered,
+    color: color,
+    fill: color.lighten(95%),
+    ..body
+  )
+}
+
+// Proposition
+#let proposition(
+  title: none,
+  numbered: true,
+  color: red.darken(20%),
+  ..body) = {
+  theorem-base(
+    proposition-counter,
+    "Proposition",
     title: title,
     numbered: numbered,
     color: color,
