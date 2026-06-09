@@ -1,5 +1,5 @@
 // axiomst/homework.typ - Homework template
-#import "common.typ": show-solutions-state
+#import "common.typ": homework-version-state
 
 #let homework(
   title: "Homework Assignment",
@@ -10,11 +10,20 @@
   due-date: none,
   collaborators: [],
   margin-size: 2.5cm,
-  show-solutions: true,
-  body
+  version: "solutions",
+  body,
 ) = {
-  // Set the global solution visibility state
-  show-solutions-state.update(show-solutions)
+  if not ("questions", "answers", "solutions").contains(version) {
+    panic("homework version must be \"questions\", \"answers\", or \"solutions\"")
+  }
+
+  homework-version-state.update(version)
+
+  let display-date = value => if type(value) == datetime {
+    value.display("[month repr:long] [day], [year]")
+  } else {
+    value
+  }
 
   set document(title: title, author: author)
 
@@ -26,9 +35,6 @@
       if counter(page).get().first() > 1 [
         #set text(style: "italic")
         #course #h(1fr) #author
-        #if collaborators != none and type(collaborators) == array and collaborators.len() > 0 {
-          [w/ #collaborators.join(", ")]
-        }
         #block(line(length: 100%, stroke: 0.5pt), above: 0.6em)
       ]
     },
@@ -44,12 +50,12 @@
       radius: 0.3em,
       stroke: luma(50%),
       inset: 1em,
-      fill: luma(98%)
+      fill: luma(98%),
     )[
       #show raw.line: l => context {
         box(
           width: measure([#it.lines.last().count]).width,
-          align(right, text(fill: luma(50%))[#l.number])
+          align(right, text(fill: luma(50%))[#l.number]),
         )
         h(0.5em)
         l.body
@@ -60,7 +66,6 @@
 
   show ref: it => {
     let element = it.element
-    let loc = it.location()
 
     if element == none {
       return it
@@ -80,9 +85,19 @@
 
       text(size: 1.2em, weight: "semibold")[#author \ ]
 
-      raw(email); linebreak()
+      raw(email)
+      linebreak()
 
-      emph[#date.display("[month repr:long] [day], [year]")]
+      if collaborators != none and type(collaborators) == array and collaborators.len() > 0 [
+        #text(size: 0.95em)[Collaborators: #collaborators.join(", ")]
+        #linebreak()
+      ]
+
+      emph[#display-date(date)]
+      if due-date != none [
+        #linebreak()
+        #text(size: 0.95em)[Due: #display-date(due-date)]
+      ]
 
       box(line(length: 100%, stroke: 1pt))
     },
@@ -93,8 +108,7 @@
       nums = nums.pos()
       if nums.len() == 1 {
         [Problem #nums.at(0):]
-      }
-      else if nums.len() > 2 {
+      } else if nums.len() > 2 {
         [Part (#numbering("a", nums.at(1))):]
       }
     },

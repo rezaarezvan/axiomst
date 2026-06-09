@@ -13,8 +13,6 @@
   corollary-counter,
   example-counter,
   algorithm-counter,
-  // State
-  show-solutions-state,
   // Layout
   columns,
   // Math
@@ -32,7 +30,6 @@
   proof,
   problem,
   subquestions,
-  solution,
   pfigure,
   ptable,
   instructions,

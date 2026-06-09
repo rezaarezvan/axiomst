@@ -14,7 +14,7 @@ A clean, elegant template for academic homework and presentation slides in [Typs
 - Automatic problem numbering
 - Theorem, lemma, definition, corollary, and example boxes
 - Proof blocks with customizable QED symbols
-- Toggleable solutions
+- Versioned problem sets: questions, answers, or worked solutions
 - Page headers and footers with automatic numbering
 
 ### Slides Template
@@ -26,18 +26,18 @@ A clean, elegant template for academic homework and presentation slides in [Typs
 
 ## Quick Start
 ```sh
-typst init @preview/axiomst:0.2.1
+typst init @preview/axiomst:0.3.0
 ```
 
 Or import directly:
 
 ```typst
-#import "@preview/axiomst:0.2.1": *
+#import "@preview/axiomst:0.3.0": *
 ```
 
 ## Homework Usage
 ```typst
-#import "@preview/axiomst:0.2.1": *
+#import "@preview/axiomst:0.3.0": *
 
 #show: homework.with(
   title: "Problem Set 1",
@@ -45,10 +45,22 @@ Or import directly:
   course: "MATH 101",
   email: "name@uni.com",
   date: datetime.today(),
-  collaborators: ["Alice", "Bob"],
+  collaborators: ("Alice", "Bob"),
+  version: "solutions",
 )
 
-#problem(title: "Vector Spaces")[
+#problem(
+  title: "Vector Spaces",
+  answer: [
+    Use the vector space axioms to prove uniqueness and cancellation.
+  ],
+  solution: [
+    Suppose there are two zero vectors $0$ and $0'$.
+    Since $0$ is a zero vector, $0 + 0' = 0'$.
+    Since $0'$ is a zero vector, $0 + 0' = 0$.
+    Hence $0 = 0'$.
+  ],
+)[
   Let $V$ be a vector space over a field $F$. Prove the following:
   1. The zero vector $0_V$ is unique.
   2. For each $v in V$, the additive inverse $-v$ is unique.
@@ -73,7 +85,7 @@ Or import directly:
 | `date` | Submission date | `datetime.today()` |
 | `due-date` | Due date (optional) | `none` |
 | `collaborators` | List of collaborators | `[]` |
-| `show-solutions` | Show/hide solutions | `true` |
+| `version` | Output version: `"questions"`, `"answers"`, or `"solutions"` | `"solutions"` |
 
 ### Academic Elements
 - `theorem(title: "", numbered: true)[...]`
@@ -81,13 +93,17 @@ Or import directly:
 - `definition(title: "", numbered: true)[...]`
 - `corollary(title: "", numbered: true)[...]`
 - `example(title: "", numbered: true)[...]`
-- `proof[...]` - with customizable `qed-symbol`
-- `problem(title: "", numbered: true)[...]`
-- `solution[...]` - toggleable with `show-solutions`
+- `proof(title: [Proof.], qed-symbol: "fill")[...]`
+- `problem(title: "", numbered: true, answer: none, solution: none)[...]`
+
+Problem versions:
+- `version: "questions"` - questions only
+- `version: "answers"` - questions plus `answer`, falling back to `solution`
+- `version: "solutions"` - questions plus `solution`
 
 ## Slides Usage
 ```typst
-#import "@preview/axiomst:0.2.1": *
+#import "@preview/axiomst:0.3.0": *
 
 #show: slides.with(
   title: "My Presentation",

@@ -1,7 +1,7 @@
 // axiomst template - Academic homework and slides
 // Delete the parts you don't need!
 
-#import "@preview/axiomst:0.2.1": *
+#import "@preview/axiomst:0.3.0": *
 
 // ============================================================================
 // HOMEWORK TEMPLATE
@@ -15,7 +15,7 @@
   date: datetime.today(),
   // due-date: "Next Friday",
   // collaborators: ("Alice", "Bob"),
-  // show-solutions: false,  // Set to false to hide solutions
+  version: "solutions", // Use "questions", "answers", or "solutions"
 )
 
 // Optional: Use a nicer font
@@ -25,16 +25,20 @@
   Replace this with your assignment instructions, or delete this block.
 ]
 
-#problem(title: "Your First Problem")[
+#problem(
+  title: "Your First Problem",
+  answer: [
+    The answer is $1 / 3$.
+  ],
+  solution: [
+    Use the power rule:
+    $ integral_0^1 x^2 dif x = [x^3 / 3]_0^1 = 1 / 3 $.
+  ],
+)[
   State the problem here. You can use math: $integral_0^1 x^2 dif x = 1/3$.
 
   + First part of the problem.
   + Second part of the problem.
-]
-
-#solution[
-  Write your solution here. This block can be hidden by setting
-  `show-solutions: false` in the homework configuration.
 ]
 
 #theorem(title: "A Theorem")[

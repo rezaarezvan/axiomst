@@ -12,8 +12,8 @@
 #let example-counter = counter("example")
 #let algorithm-counter = counter("algorithm")
 
-// Global state for solution visibility
-#let show-solutions-state = state("show-solutions", true)
+// Global state for homework output version
+#let homework-version-state = state("homework-version", "solutions")
 
 // Column layout utility
 #let columns(
@@ -263,9 +263,7 @@
 }
 
 // Proof block
-#let proof(body, qed-symbol: "fill") = {
-  block(body)
-
+#let proof(body, title: [Proof.], qed-symbol: "fill") = {
   let symbol = if qed-symbol == "fill" {
     text(fill: gray.darken(30%), size: 1.2em, weight: "bold")[■]
   } else if qed-symbol == "hollow" {
@@ -278,7 +276,18 @@
     text(fill: gray.darken(30%))[#qed-symbol]
   }
 
-  align(right, symbol)
+  block(
+    width: 100%,
+    breakable: true,
+  )[
+    #if title != none [
+      #text(weight: "bold")[#title]
+      #h(0.4em)
+    ]
+    #body
+    #v(0.2em)
+    #align(right, symbol)
+  ]
 }
 
 // Problem box
@@ -286,10 +295,38 @@
   title: "",
   color: blue.darken(20%),
   numbered: true,
+  answer: none,
+  solution: none,
   ..body
 ) = {
   if numbered {
-    [== Problem #problem-counter.step() #context {problem-counter.display()}]
+    problem-counter.step()
+    place(hide(context {
+      let problem-number = problem-counter.get().first()
+      counter(heading).update((0, problem-number - 1))
+      heading(
+        level: 2,
+        numbering: (..nums) => {
+          let nums = nums.pos()
+          if nums.len() == 2 and nums.at(0) == 0 {
+            [Problem #nums.at(1):]
+          }
+        },
+      )[#title]
+    }))
+  }
+
+  let content = body.pos()
+  let box-title = if numbered {
+    context {
+      if title == "" {
+        [Problem #problem-counter.display()]
+      } else {
+        [Problem #problem-counter.display(): #title]
+      }
+    }
+  } else {
+    title
   }
 
   showybox(
@@ -303,9 +340,34 @@
       weight: "bold",
     ),
     breakable: true,
-    title: title,
-    ..body
-  )
+    title: box-title,
+  )[
+    #for item in content {
+      item
+    }
+    #context {
+      let version = homework-version-state.get()
+      let selected = none
+      let label = none
+
+      if version == "answers" {
+        selected = if answer != none { answer } else { solution }
+        label = "Answer:"
+      } else if version == "solutions" {
+        selected = solution
+        label = "Solution:"
+      }
+
+      if selected != none [
+        #v(0.8em)
+        #line(length: 100%, stroke: color.lighten(60%))
+        #v(0.5em)
+        #text(weight: "bold")[#label]
+        #v(0.3em)
+        #selected
+      ]
+    }
+  ]
 }
 
 // Subquestions - accepts either a single body or multiple arguments
@@ -317,23 +379,6 @@
     spacing: 1em,
     ..items
   )
-}
-
-// Solution block (toggleable)
-#let solution(body) = {
-  context {
-    if show-solutions-state.get() {
-      v(0.5em)
-      block(
-        width: 100%,
-        breakable: true,
-      )[
-        #text(weight: "bold")[Solution:]
-        #v(0.3em)
-        #body
-      ]
-    }
-  }
 }
 
 // Figure with caption
