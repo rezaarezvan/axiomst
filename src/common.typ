@@ -15,6 +15,12 @@
 // Global state for homework output version
 #let homework-version-state = state("homework-version", "solutions")
 
+// Global state for homework labels
+#let homework-labels-state = state(
+  "homework-labels",
+  (problem: [Problem], answer: [Answer:], solution: [Solution:]),
+)
+
 // Column layout utility
 #let columns(
   count: 2,
@@ -38,25 +44,31 @@
     grid(
       columns: col-widths,
       column-gutter: gutter,
-      ..content.enumerate().map(((i, c)) => {
-        if i < content.len() - 1 {
-          (c, line(angle: 90deg, length: 100%, stroke: (thickness: 0.5pt, dash: "solid")))
-        } else {
-          c
-        }
-      }).flatten()
+      ..content
+        .enumerate()
+        .map(((i, c)) => {
+          if i < content.len() - 1 {
+            (c, line(angle: 90deg, length: 100%, stroke: (thickness: 0.5pt, dash: "solid")))
+          } else {
+            c
+          }
+        })
+        .flatten()
     )
   } else if separator != none and type(separator) == "function" {
     grid(
       columns: col-widths,
       column-gutter: gutter,
-      ..content.enumerate().map(((i, c)) => {
-        if i < content.len() - 1 {
-          (c, separator())
-        } else {
-          c
-        }
-      }).flatten()
+      ..content
+        .enumerate()
+        .map(((i, c)) => {
+          if i < content.len() - 1 {
+            (c, separator())
+          } else {
+            c
+          }
+        })
+        .flatten()
     )
   } else {
     grid(
@@ -92,8 +104,7 @@
     columns: (1fr, auto),
     column-gutter: 1em,
     align: (center + horizon, right + horizon),
-    math.equation(block: true, numbering: none, math-body),
-    context num-counter.display(format),
+    math.equation(block: true, numbering: none, math-body), context num-counter.display(format),
   )
   if visible { rendered } else { hide(rendered) }
 }
@@ -106,7 +117,7 @@
   numbered: true,
   color: blue.darken(20%),
   fill: blue.lighten(95%),
-  body
+  body,
 ) = {
   context {
     let handout = state("axiomst-handout", false).get()
@@ -118,7 +129,7 @@
     if visible {
       let number = if numbered {
         if first-visible { ctr.step() }
-        context(ctr.display())
+        context (ctr.display())
       }
 
       block(
@@ -128,7 +139,7 @@
         stroke: color.darken(10%),
         inset: 0.6em,
       )[
-        #text(weight: "bold")[#prefix #if numbered {number}]
+        #text(weight: "bold")[#prefix #if numbered { number }]
         #if title != none [#text(style: "italic")[#title].]
         #v(0.5em)
         #body
@@ -142,7 +153,7 @@
   title: none,
   numbered: true,
   color: blue.darken(20%),
-  ..body
+  ..body,
 ) = {
   theorem-base(
     theorem-counter,
@@ -151,7 +162,7 @@
     numbered: numbered,
     color: color,
     fill: color.lighten(95%),
-    ..body
+    ..body,
   )
 }
 
@@ -160,7 +171,7 @@
   title: none,
   numbered: true,
   color: green.darken(20%),
-  ..body
+  ..body,
 ) = {
   theorem-base(
     lemma-counter,
@@ -169,7 +180,7 @@
     numbered: numbered,
     color: color,
     fill: color.lighten(95%),
-    ..body
+    ..body,
   )
 }
 
@@ -178,7 +189,7 @@
   title: none,
   numbered: true,
   color: gray.darken(20%),
-  ..body
+  ..body,
 ) = {
   theorem-base(
     remark-counter,
@@ -187,7 +198,7 @@
     numbered: numbered,
     color: color,
     fill: color.lighten(95%),
-    ..body
+    ..body,
   )
 }
 
@@ -196,7 +207,8 @@
   title: none,
   numbered: true,
   color: red.darken(20%),
-  ..body) = {
+  ..body,
+) = {
   theorem-base(
     proposition-counter,
     "Proposition",
@@ -204,7 +216,7 @@
     numbered: numbered,
     color: color,
     fill: color.lighten(95%),
-    ..body
+    ..body,
   )
 }
 
@@ -213,7 +225,7 @@
   title: none,
   numbered: true,
   color: purple.darken(20%),
-  ..body
+  ..body,
 ) = {
   theorem-base(
     definition-counter,
@@ -222,7 +234,7 @@
     numbered: numbered,
     color: color,
     fill: color.lighten(95%),
-    ..body
+    ..body,
   )
 }
 
@@ -231,7 +243,7 @@
   title: none,
   numbered: true,
   color: orange.darken(20%),
-  ..body
+  ..body,
 ) = {
   theorem-base(
     corollary-counter,
@@ -240,7 +252,7 @@
     numbered: numbered,
     color: color,
     fill: color.lighten(95%),
-    ..body
+    ..body,
   )
 }
 
@@ -249,7 +261,7 @@
   title: none,
   numbered: true,
   color: aqua.darken(20%),
-  ..body
+  ..body,
 ) = {
   theorem-base(
     example-counter,
@@ -258,7 +270,7 @@
     numbered: numbered,
     color: color,
     fill: color.lighten(95%),
-    ..body
+    ..body,
   )
 }
 
@@ -295,21 +307,32 @@
   title: "",
   color: blue.darken(20%),
   numbered: true,
+  label: auto,
+  answer-label: auto,
+  solution-label: auto,
   answer: none,
   solution: none,
-  ..body
+  ..body,
 ) = {
+  let resolve-label = (value, key) => if value == auto {
+    homework-labels-state.get().at(key)
+  } else {
+    value
+  }
+
   if numbered {
     problem-counter.step()
     place(hide(context {
       let problem-number = problem-counter.get().first()
+      let resolved-label = resolve-label(label, "problem")
       counter(heading).update((0, problem-number - 1))
       heading(
         level: 2,
+        supplement: resolved-label,
         numbering: (..nums) => {
           let nums = nums.pos()
           if nums.len() == 2 and nums.at(0) == 0 {
-            [Problem #nums.at(1):]
+            [#resolved-label #nums.at(1):]
           }
         },
       )[#title]
@@ -319,10 +342,11 @@
   let content = body.pos()
   let box-title = if numbered {
     context {
+      let resolved-label = resolve-label(label, "problem")
       if title == "" {
-        [Problem #problem-counter.display()]
+        [#resolved-label #problem-counter.display()]
       } else {
-        [Problem #problem-counter.display(): #title]
+        [#resolved-label #problem-counter.display(): #title]
       }
     }
   } else {
@@ -333,7 +357,7 @@
     frame: (
       border-color: color.darken(10%),
       title-color: color.lighten(85%),
-      body-color: color.lighten(95%)
+      body-color: color.lighten(95%),
     ),
     title-style: (
       color: black,
@@ -348,21 +372,21 @@
     #context {
       let version = homework-version-state.get()
       let selected = none
-      let label = none
+      let selected-label = none
 
       if version == "answers" {
         selected = if answer != none { answer } else { solution }
-        label = "Answer:"
+        selected-label = resolve-label(answer-label, "answer")
       } else if version == "solutions" {
         selected = solution
-        label = "Solution:"
+        selected-label = resolve-label(solution-label, "solution")
       }
 
       if selected != none [
         #v(0.8em)
         #line(length: 100%, stroke: color.lighten(60%))
         #v(0.5em)
-        #text(weight: "bold")[#label]
+        #text(weight: "bold")[#selected-label]
         #v(0.3em)
         #selected
       ]
@@ -377,7 +401,7 @@
     numbering: n => text(weight: "bold")[Q#n:],
     tight: false,
     spacing: 1em,
-    ..items
+    ..items,
   )
 }
 

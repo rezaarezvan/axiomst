@@ -86,6 +86,9 @@ Or import directly:
 | `due-date` | Due date (optional) | `none` |
 | `collaborators` | List of collaborators | `[]` |
 | `version` | Output version: `"questions"`, `"answers"`, or `"solutions"` | `"solutions"` |
+| `problem-label` | Default label for numbered problems | `[Problem]` |
+| `answer-label` | Default answer label, including punctuation | `[Answer:]` |
+| `solution-label` | Default solution label, including punctuation | `[Solution:]` |
 
 ### Academic Elements
 - `theorem(title: "", numbered: true)[...]`
@@ -94,12 +97,36 @@ Or import directly:
 - `corollary(title: "", numbered: true)[...]`
 - `example(title: "", numbered: true)[...]`
 - `proof(title: [Proof.], qed-symbol: "fill")[...]`
-- `problem(title: "", numbered: true, answer: none, solution: none)[...]`
+- `problem(title: "", numbered: true, label: auto, answer-label: auto, solution-label: auto, answer: none, solution: none)[...]`
 
 Problem versions:
 - `version: "questions"` - questions only
 - `version: "answers"` - questions plus `answer`, falling back to `solution`
 - `version: "solutions"` - questions plus `solution`
+
+Custom labels can be set for the whole homework:
+
+```typst
+#show: homework.with(
+  problem-label: [Uppgift],
+  answer-label: [Svar:],
+  solution-label: [Lösning:],
+)
+```
+
+They can also be overridden for one problem. Strings and content values are both accepted, and answer and solution labels are rendered with exactly the punctuation supplied:
+
+```typst
+#problem(
+  label: "Övning",
+  answer-label: [Kort svar --],
+  solution-label: "Fullständig lösning:",
+  answer: [The short answer.],
+  solution: [The worked solution.],
+)[
+  The question.
+]
+```
 
 ## Slides Usage
 ```typst

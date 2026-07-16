@@ -16,6 +16,9 @@
   // due-date: "Next Friday",
   // collaborators: ("Alice", "Bob"),
   version: "solutions", // Use "questions", "answers", or "solutions"
+  // problem-label: [Exercise],
+  // answer-label: [Answer:],
+  // solution-label: [Worked solution:],
 )
 
 // Optional: Use a nicer font
@@ -27,6 +30,9 @@
 
 #problem(
   title: "Your First Problem",
+  // label: "Exercise", // Override the problem label for this problem only
+  // answer-label: [Short answer:],
+  // solution-label: [Worked solution:],
   answer: [
     The answer is $1 / 3$.
   ],

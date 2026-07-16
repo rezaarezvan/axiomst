@@ -1,5 +1,5 @@
 // axiomst/homework.typ - Homework template
-#import "common.typ": homework-version-state
+#import "common.typ": homework-labels-state, homework-version-state
 
 #let homework(
   title: "Homework Assignment",
@@ -11,6 +11,9 @@
   collaborators: [],
   margin-size: 2.5cm,
   version: "solutions",
+  problem-label: [Problem],
+  answer-label: [Answer:],
+  solution-label: [Solution:],
   body,
 ) = {
   if not ("questions", "answers", "solutions").contains(version) {
@@ -18,6 +21,11 @@
   }
 
   homework-version-state.update(version)
+  homework-labels-state.update((
+    problem: problem-label,
+    answer: answer-label,
+    solution: solution-label,
+  ))
 
   let display-date = value => if type(value) == datetime {
     value.display("[month repr:long] [day], [year]")
@@ -64,20 +72,6 @@
     ]
   }
 
-  show ref: it => {
-    let element = it.element
-
-    if element == none {
-      return it
-    }
-
-    if element.func() == heading and element.level == 2 {
-      [Problem #it.number]
-    } else {
-      it
-    }
-  }
-
   align(
     center,
     {
@@ -104,10 +98,11 @@
   )
 
   set heading(
+    supplement: problem-label,
     numbering: (..nums) => {
       nums = nums.pos()
       if nums.len() == 1 {
-        [Problem #nums.at(0):]
+        [#problem-label #nums.at(0):]
       } else if nums.len() > 2 {
         [Part (#numbering("a", nums.at(1))):]
       }

@@ -39,12 +39,4 @@
 #import "homework.typ": homework
 
 // Re-export slides components
-#import "slides.typ": (
-  slides,
-  slide,
-  title-slide,
-  section-slide,
-  pause,
-  uncover,
-  only,
-)
+#import "slides.typ": only, pause, section-slide, slide, slides, title-slide, uncover
